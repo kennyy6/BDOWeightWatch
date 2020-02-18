@@ -2,6 +2,8 @@ import pyautogui
 import telegram
 import credentials
 import time
+import os
+
 
 
 def checker():
@@ -20,8 +22,27 @@ def checker():
     # THen alter the user
 
 
-def checkProcess():
-    pass
+def checkProcess(name):
+    #print(os.popen('BlackDesert64').read())
+    r = os.popen('tasklist /v').read().strip().split('\n')
+
+    for i in range(len(r)):
+        if name in r[i]:
+            print(r[i])
+            print('%s in r[i]' % (name))
+            return True
+
+    shutdown = False
+    if shutdown:
+        pc_shutDown()
+
+def pc_shutDown():
+    os.system('shutdown -s')
+
+
+
+
+
 
 
 
@@ -30,21 +51,18 @@ def checkProcess():
 
 
 if __name__ == "__main__":
-    try:
-        bot = telegram.Bot(token=credentials.api_id)
-    except:
-        print("ERROR COULD NOT USE BOT")
-
-    starttime = time.time()
-    timeInterval = 60# What time would you like in seconds
-    while True:
-        checker()
-        print("test")
-        time.sleep(timeInterval - ((time.time() - starttime) % 60.0))
-
-
-
-
+    # try:
+    #     bot = telegram.Bot(token=credentials.api_id)
+    # except:
+    #     print("ERROR COULD NOT USE BOT")
+    #
+    # starttime = time.time()
+    # timeInterval = 60# What time would you like in seconds
     # while True:
-    #         print(pyautogui.position())
+    #     checker()
+    #     print("test")
+    #     time.sleep(timeInterval - ((time.time() - starttime) % 60.0))
+    #
+    #
 
+    checkProcess("BlackDesert64")
