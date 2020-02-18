@@ -6,7 +6,9 @@ import time
 
 def checker():
     coords = pyautogui.locateCenterOnScreen("weight.png", confidence = 0.7)
+    print(coords)
     if coords != None:
+        print("sent message")
         for i in range(2):
             bot.send_message(chat_id=credentials.chat_acutal_id, text="Weight is full please restock")
 
@@ -34,7 +36,7 @@ if __name__ == "__main__":
         print("ERROR COULD NOT USE BOT")
 
     starttime = time.time()
-    timeInterval = 300# What time would you like in seconds
+    timeInterval = 60# What time would you like in seconds
     while True:
         checker()
         print("test")
