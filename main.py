@@ -28,13 +28,14 @@ def checkProcess(name):
 
     for i in range(len(r)):
         if name in r[i]:
-            print(r[i])
-            print('%s in r[i]' % (name))
+            # print(r[i])
+            # print('%s in r[i]' % (name))
             return True
 
     shutdown = False
     if shutdown:
         pc_shutDown()
+    return False
 
 def pc_shutDown():
     os.system('shutdown -s')
@@ -42,27 +43,20 @@ def pc_shutDown():
 
 
 
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
-    # try:
-    #     bot = telegram.Bot(token=credentials.api_id)
-    # except:
-    #     print("ERROR COULD NOT USE BOT")
-    #
-    # starttime = time.time()
-    # timeInterval = 60# What time would you like in seconds
-    # while True:
-    #     checker()
-    #     print("test")
-    #     time.sleep(timeInterval - ((time.time() - starttime) % 60.0))
-    #
-    #
+    try:
+        bot = telegram.Bot(token=credentials.api_id)
+    except:
+        print("ERROR COULD NOT USE BOT")
 
-    checkProcess("BlackDesert64")
+    starttime = time.time()
+    timeInterval = 180# What time would you like in seconds
+    while True:
+        checker()
+        print("test")
+        time.sleep(timeInterval - ((time.time() - starttime) % 60.0))
+        processcheck = checkProcess("BlackDesert64")
+        if processcheck:
+            print("Black desert is running")
+        else:
+            print("Black desert is not running")
