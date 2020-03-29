@@ -7,6 +7,10 @@ import os
 
 
 def checker():
+    """
+    Scans to screen to see if the weight limit exist
+    :return:
+    """
     coords = pyautogui.locateCenterOnScreen("weight.png", confidence = 0.7)
     print(coords)
     if coords != None:
@@ -23,6 +27,11 @@ def checker():
 
 
 def checkProcess(name):
+    """
+    Checks to see if blackdesert64.exe still exists within the task manager
+    :param name:
+    :return:
+    """
     #print(os.popen('BlackDesert64').read())
     r = os.popen('tasklist /v').read().strip().split('\n')
 
