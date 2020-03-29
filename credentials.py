@@ -1,2 +1,0 @@
-api_id = "1047516045:AAEc9wr7pMoiN6N21RnAI6AOPaQwLEIZqPk"
-chat_acutal_id = 729964004
