@@ -1,9 +1,12 @@
 import pyautogui
 import telegram
-import credentials
+from telegram.ext import Updater, CommandHandler
 import time
 import os
-
+try:
+    import credentials
+except ModuleNotFoundError:
+    print("Please provide your own credential ID for telegram api key")
 
 
 def checker():
@@ -26,7 +29,7 @@ def checker():
     # THen alter the user
 
 
-def checkProcess(name):
+def checkProcess():
     """
     Checks to see if blackdesert64.exe still exists within the task manager
     :param name:
@@ -34,7 +37,7 @@ def checkProcess(name):
     """
     #print(os.popen('BlackDesert64').read())
     r = os.popen('tasklist /v').read().strip().split('\n')
-
+    name = "BlackDesert64"
     for i in range(len(r)):
         if name in r[i]:
             # print(r[i])
@@ -49,7 +52,9 @@ def checkProcess(name):
 def pc_shutDown():
     os.system('shutdown -s')
 
-
+def test(update,context):
+    update.message.reply_text(update.message.text)
+    #bot.send_message(chat_id=credentials.chat_acutal_id, text="HI")
 
 
 if __name__ == "__main__":
@@ -58,14 +63,22 @@ if __name__ == "__main__":
     except:
         print("ERROR COULD NOT USE BOT")
 
-    starttime = time.time()
-    timeInterval = 180# What time would you like in seconds
-    while True:
-        checker()
-        print("test")
-        time.sleep(timeInterval - ((time.time() - starttime) % 60.0))
-        processcheck = checkProcess("BlackDesert64")
-        if processcheck:
-            print("Black desert is running")
-        else:
-            print("Black desert is not running")
+    response = Updater(credentials.api_id, use_context = True)
+    response.dispatcher.add_handler(CommandHandler("test",test))
+    response.start_polling()
+    response.idle()
+
+
+    # starttime = time.time()
+    # timeInterval = 180# What time would you like in seconds
+    # while True:
+    #     checker() # Checks weight Limit
+    #     time.sleep(timeInterval - ((time.time() - starttime) % 60.0))
+    #     processcheck = checkProcess()
+    #     if processcheck:
+    #         print("Black desert is running")
+    #     else:
+    #         print("Black desert is not running")
+    #         bot.send_message(chat_id=credentials.chat_acutal_id, text="Black Desert Process in not running")
+    #
+    #
