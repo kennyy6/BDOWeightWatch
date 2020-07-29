@@ -1,6 +1,6 @@
 import pyautogui
 import telegram
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler,CallbackQueryHandler
 import time
 import os
 try:
@@ -44,13 +44,38 @@ def checkProcess():
             # print('%s in r[i]' % (name))
             return True
 
-    shutdown = False
-    if shutdown:
-        pc_shutDown()
+
     return False
 
-def pc_shutDown():
+def pc_shutDown_warning(update,context):
+    """
+    Verifys with the user to see if they whether want to shut down the pc.
+
+    :return:
+    """
+    #bot.send_message(chat_id=credentials.chat_acutal_id,text = "Are you sure you want to shut down computer?")
+    keyboard = [[telegram.InlineKeyboardButton("Yes", callback_data='True_to_Shutdown'),
+                 telegram.InlineKeyboardButton("No", callback_data='False_to_Shutdown')]]
+    reply_keyboard = telegram.InlineKeyboardMarkup(keyboard)
+    print("test")
+    update.message.reply_text('Are you sure you want to shut down computer?', reply_markup=reply_keyboard)
+    return
+
+def pc_shutdown():
     os.system('shutdown -s')
+
+def button(update, context):
+    query = update.callback_query
+
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    query.answer()
+    print(query.data)
+    if query.data == "True_to_Shutdown":
+        pc_shutdown()
+    elif query.data == "False_to_Shutdown":
+        query.edit_message_text(text="Okay I will not shutdown pc :)")
+
 
 def test(update,context):
     update.message.reply_text(update.message.text)
@@ -64,8 +89,14 @@ if __name__ == "__main__":
         print("ERROR COULD NOT USE BOT")
 
     response = Updater(credentials.api_id, use_context = True)
-    response.dispatcher.add_handler(CommandHandler("test",test))
+    # Provide Handler for Shutdown
+    response.dispatcher.add_handler(CommandHandler("shutdown",pc_shutDown_warning))
+    # Handlers in Reponse for confirmation of YES to shutdown or No to shutdown
+    response.dispatcher.add_handler(CallbackQueryHandler(button))
+
     response.start_polling()
+    # Just a Notification to show that the bot is actually working.
+    bot.send_message(chat_id=credentials.chat_acutal_id, text="Bot is running")
     response.idle()
 
 
