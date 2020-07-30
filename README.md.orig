@@ -28,3 +28,5 @@ To Do list
 - [ ] Graphical interface and a way for user to input their telegram api
 - [ ] Deploy it on heroku
 
+**Please note that it only works when the game is visible to the screen. In addition, credentials.py will not be provided dude to privacy,
+but if you do intend to replicate the code you can replace token with your own API key.**  
