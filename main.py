@@ -9,18 +9,46 @@ except ModuleNotFoundError:
     print("Please provide your own credential ID for telegram api key")
 
 
+def open_bdo():
+    """
+    Opens up Bdo in the event if it is currently not opened.
+    :return:
+    """
+
+    coords = pyautogui.locateCenterOnScreen("bdo_icon.png", confidence=0.7)
+    if coords != None:
+        pyautogui.click(coords.x, coords.y)
+        return True
+    # Check if its actually minimised so with another icon
+
+    coords = pyautogui.locateCenterOnScreen("show_hidden_icon.png", confidence=0.7)
+    if coords != None:
+        pyautogui.click(coords.x,coords.y)
+        coords = pyautogui.locateCenterOnScreen("bdo_icon_2.png", confidence=0.7)
+        if coords != None:
+            pyautogui.click(coords.x, coords.y)
+    return False
+
 def checker():
     """
     Scans to screen to see if the weight limit exist
     :return:
     """
-    coords = pyautogui.locateCenterOnScreen("weight.png", confidence = 0.7)
-    print(coords)
-    if coords != None:
+
+    check_opened = open_bdo()
+
+
+    coords = pyautogui.locateCenterOnScreen("bdo_weight.png", confidence = 0.7)
+    if coords == None:
+        time.sleep(5)
+        coords = pyautogui.locateCenterOnScreen("bdo_weight.png", confidence=0.5)
+
+
+    if coords != None and check_opened:
         print("sent message")
+        pyautogui.moveTo(coords.x,coords.y)
         for i in range(2):
             bot.send_message(chat_id=credentials.chat_acutal_id, text="Weight is full please restock")
-
 
 
     # else:
@@ -82,11 +110,18 @@ def test(update,context):
     #bot.send_message(chat_id=credentials.chat_acutal_id, text="HI")
 
 
+
+
+
 if __name__ == "__main__":
+
+
     try:
         bot = telegram.Bot(token=credentials.api_id)
     except:
         print("ERROR COULD NOT USE BOT")
+
+
 
     response = Updater(credentials.api_id, use_context = True)
     # Provide Handler for Shutdown
@@ -97,19 +132,10 @@ if __name__ == "__main__":
     response.start_polling()
     # Just a Notification to show that the bot is actually working.
     bot.send_message(chat_id=credentials.chat_acutal_id, text="Bot is running")
-    response.idle()
+    x = int(input("Value ?"))
+    while True:
+        checker()
+        time.sleep(x)
+    #response.idle()
 
 
-    # starttime = time.time()
-    # timeInterval = 180# What time would you like in seconds
-    # while True:
-    #     checker() # Checks weight Limit
-    #     time.sleep(timeInterval - ((time.time() - starttime) % 60.0))
-    #     processcheck = checkProcess()
-    #     if processcheck:
-    #         print("Black desert is running")
-    #     else:
-    #         print("Black desert is not running")
-    #         bot.send_message(chat_id=credentials.chat_acutal_id, text="Black Desert Process in not running")
-    #
-    #
