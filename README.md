@@ -7,7 +7,7 @@ For a game called Black Desert Online, Checks to see if the weight icon limit ap
 
 
 To Do list  
-- [ ] Add a function that notifies through telegram that players has stopped cooking
+- [x] Add a function that notifies through telegram that players has stopped cooking
 - [X] Somehow scans the process to see if its running if not then notify
   - Function completed
   - Need Implementation via Telegram
@@ -18,5 +18,5 @@ To Do list
 - [X] Set time when it scans (possible user input)
   - Note that its manually inputed through Python console, will implement where you can do it via telegram
 - [ ] Graphical interface and a way for user to input their telegram api
-- [ ] Deploy it on heroku
+
 
