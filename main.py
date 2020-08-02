@@ -35,27 +35,7 @@ class bdo_model:
         self.verify_time = False
         #self.response.idle()
 
-
-    ### NOTE TO SELF CONTINUE HERE
-    ### I FINISHED AT LINE 169
-    def loop(self,timer):
-        """
-        Repeatedly Check based on a timer provided by the user
-        """
-
-        while self.verify_time:
-            print(self.verify_time)
-            if self.max_weight:
-                print("called check_weight Function")
-                self.check_weight()
-            if self.max_cooking:
-                print("called max_cooking function")
-                self.check_cooking()
-            time.sleep(timer)
-
-
-
-    def start(self,update,context):
+    def start(self, update, context):
         """
         Finds out the user what they want to do with this python script either for tracking max weight
         or either when they have finished what they are doing
@@ -72,6 +52,90 @@ class bdo_model:
 
         update.message.reply_text('What would you like to keep track of', reply_markup=reply_keyboard)
         return
+
+    def pc_shutDown_warning(self,update,context):
+        """
+        Verifys with the user to see if they whether want to shut down the pc.
+
+        :return:
+        """
+        #bot.send_message(chat_id=credentials.chat_acutal_id,text = "Are you sure you want to shut down computer?")
+        keyboard = [[telegram.InlineKeyboardButton("Yes", callback_data='True_to_Shutdown'),
+                     telegram.InlineKeyboardButton("No", callback_data='False_to_Shutdown')]]
+        reply_keyboard = telegram.InlineKeyboardMarkup(keyboard)
+        print("test")
+        update.message.reply_text('Are you sure you want to shut down computer?', reply_markup=reply_keyboard)
+        return
+
+
+
+    def pc_shutdown(self):
+        os.system('shutdown -s')
+
+    def button(self,update, context):
+        query = update.callback_query
+
+        # CallbackQueries need to be answered, even if no notification to the user is needed
+
+        print(query.data)
+        if query.data == "True_to_Shutdown":
+            self.pc_shutdown()
+        elif query.data == "False_to_Shutdown":
+            query.edit_message_text(text="Okay I will not shutdown pc :)")
+
+        elif query.data == 'max_weight':
+            self.max_weight = True
+            self.max_cooking = False
+            self.verify_time = True
+        elif query.data == 'max_cooking':
+            self.max_cooking = True
+            self.max_weight = False
+            self.verify_time = True
+
+        elif query.data == 'both_max':
+            self.max_cooking = True
+            self.max_weight = True
+            self.verify_time = True
+
+        elif query.data =='both_none':
+            self.max_cooking = False
+            self.max_weight = False
+            self.verify_time = False
+
+        if self.verify_time:
+            print(self.verify_time)
+            query.edit_message_text(text="How much time would you like (in seconds)?")
+
+            # Note to self you might have to stop the bot, then start it again
+            # Add a conversation Handler so i can get their response
+            self.response.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command,self.time_give))
+
+    def time_give(self,update,context):
+        messsage =update.message.text
+        print("Message Received: ",update.message.text," seconds will be the timer")
+        try:
+            timer =int(messsage)
+        except:
+            update.message.reply_text("Cannot convert to Integer")
+            return
+
+        self.loop(timer)
+
+    def loop(self,timer):
+        """
+        Repeatedly Check based on a timer provided by the user
+        """
+
+        while self.verify_time:
+            print(self.verify_time)
+            if self.max_weight:
+                print("called check_weight Function")
+                self.check_weight()
+            if self.max_cooking:
+                print("called max_cooking function")
+                self.check_cooking()
+            time.sleep(timer)
+
 
 
     def open_bdo(self):
@@ -156,72 +220,7 @@ class bdo_model:
                 return True
         return False
 
-    def pc_shutDown_warning(self,update,context):
-        """
-        Verifys with the user to see if they whether want to shut down the pc.
 
-        :return:
-        """
-        #bot.send_message(chat_id=credentials.chat_acutal_id,text = "Are you sure you want to shut down computer?")
-        keyboard = [[telegram.InlineKeyboardButton("Yes", callback_data='True_to_Shutdown'),
-                     telegram.InlineKeyboardButton("No", callback_data='False_to_Shutdown')]]
-        reply_keyboard = telegram.InlineKeyboardMarkup(keyboard)
-        print("test")
-        update.message.reply_text('Are you sure you want to shut down computer?', reply_markup=reply_keyboard)
-        return
-
-
-
-    def pc_shutdown(self):
-        os.system('shutdown -s')
-
-    def button(self,update, context):
-        query = update.callback_query
-
-        # CallbackQueries need to be answered, even if no notification to the user is needed
-
-        print(query.data)
-        if query.data == "True_to_Shutdown":
-            self.pc_shutdown()
-        elif query.data == "False_to_Shutdown":
-            query.edit_message_text(text="Okay I will not shutdown pc :)")
-
-        elif query.data == 'max_weight':
-            self.max_weight = True
-            self.max_cooking = False
-            self.verify_time = True
-        elif query.data == 'max_cooking':
-            self.max_cooking = True
-            self.max_weight = False
-            self.verify_time = True
-
-        elif query.data == 'both_max':
-            self.max_cooking = True
-            self.max_weight = True
-            self.verify_time = True
-
-        elif query.data =='both_none':
-            self.max_cooking = False
-            self.max_weight = False
-            self.verify_time = False
-
-        if self.verify_time:
-            print(self.verify_time)
-            query.edit_message_text(text="How much time would you like (in seconds)?")
-
-            # Note to self you might have to stop the bot, then start it again
-            # Add a conversation Handler so i can get their response
-            self.response.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command,self.time_give))
-    def time_give(self,update,context):
-        messsage =update.message.text
-        print("Message Received: ",update.message.text," seconds will be the timer")
-        try:
-            timer =int(messsage)
-        except:
-            update.message.reply_text("Cannot convert to Integer")
-            return
-
-        self.loop(timer)
 
 
 
